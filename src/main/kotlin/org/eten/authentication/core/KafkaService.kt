@@ -6,10 +6,13 @@ import org.springframework.stereotype.Component
 
 @Component
 class KafkaService(
-  @Autowired
-  val kafka: KafkaTemplate<String, String>,
+    @Autowired
+    val kafka: KafkaTemplate<String, String>,
 ) {
-  fun send(topic: KafkaTopics, message: String){
+  fun send(
+      topic: KafkaTopics,
+      message: String,
+  ) {
     kafka.send(topic.name, message)
   }
 }

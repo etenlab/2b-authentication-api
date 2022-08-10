@@ -15,22 +15,22 @@ import javax.sql.DataSource
 
 @Configuration("DatabaseSync")
 class DatabaseSync(
-  @Autowired
-  val app_config: AppConfig,
+    @Autowired
+    val app_config: AppConfig,
 
-  @Autowired
-  @Qualifier("readerDataSource")
-  val writer_ds: DataSource,
+    @Autowired
+    @Qualifier("readerDataSource")
+    val writer_ds: DataSource,
 
-  @Autowired
-  @Qualifier("readerDataSource")
-  val reader_ds: DataSource,
+    @Autowired
+    @Qualifier("readerDataSource")
+    val reader_ds: DataSource,
 
-  @Autowired
-  val util: Utility,
+    @Autowired
+    val util: Utility,
 
-  @Autowired
-  val kafka: KafkaService,
+    @Autowired
+    val kafka: KafkaService,
 ) {
 
   val writer_jdbc = NamedParameterJdbcTemplate(writer_ds)
@@ -44,13 +44,15 @@ class DatabaseSync(
     try {
       InputStreamReader(resource.inputStream, Charsets.UTF_8).use { reader ->
         return FileCopyUtils.copyToString(
-          reader
+            reader
         )
       }
     } catch (e: IOException) {
       kafka.send(
-        KafkaTopics.Error,
-        e.localizedMessage + '\n' + e.stackTrace.map { it.toString() }.reduce { acc, s -> acc + '\n' + s })
+          KafkaTopics.Error,
+          e.localizedMessage + '\n' + e.stackTrace
+              .map { it.toString() }
+              .reduce { acc, s -> acc + '\n' + s })
       throw UncheckedIOException(e)
     }
   }

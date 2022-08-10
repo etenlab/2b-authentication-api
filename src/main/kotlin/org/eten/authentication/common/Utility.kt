@@ -12,37 +12,42 @@ import org.springframework.stereotype.Component
 import java.time.LocalDate
 import javax.sql.DataSource
 
-
 @Component
 class Utility(
-  @Autowired
-  val app_config: AppConfig,
+    @Autowired
+    val app_config: AppConfig,
 
-  @Autowired
-  @Qualifier("readerDataSource")
-  val writer_ds: DataSource,
+    @Autowired
+    @Qualifier("readerDataSource")
+    val writer_ds: DataSource,
 
-  @Autowired
-  @Qualifier("readerDataSource")
-  val reader_ds: DataSource,
+    @Autowired
+    @Qualifier("readerDataSource")
+    val reader_ds: DataSource,
 
-  @Autowired
-  val kafka: KafkaService,
+    @Autowired
+    val kafka: KafkaService,
 ) {
   val writer_jdbc = NamedParameterJdbcTemplate(writer_ds)
   val reader_jdbc = NamedParameterJdbcTemplate(reader_ds)
   val algo = Algorithm.HMAC256(app_config.jwt_secret)
-  val verifier = JWT.require(algo).withIssuer("etenlab").build()
+  val verifier = JWT
+      .require(algo)
+      .withIssuer("etenlab")
+      .build()
 
   fun create_jwt(pairs: List<Pair<String, String>>? = null): String {
 
-    val now = LocalDate.now().toString()
+    val now = LocalDate
+        .now()
+        .toString()
 
-    val jwt = JWT.create()
-      .withClaim("random", random_string(16))
-      .withClaim("created_at", now)
-      .withClaim("confirm", true)
-      .withIssuer("etenlab")
+    val jwt = JWT
+        .create()
+        .withClaim("random", random_string(16))
+        .withClaim("created_at", now)
+        .withClaim("confirm", true)
+        .withIssuer("etenlab")
 
     if (pairs != null) {
       for (pair in pairs) {
@@ -64,9 +69,9 @@ class Utility(
   fun random_string(length: Int): String {
     val charPool: List<Char> = ('a'..'z') + ('A'..'Z') + ('0'..'9')
     val token = (1..length)
-      .map { i -> kotlin.random.Random.nextInt(0, charPool.size) }
-      .map(charPool::get)
-      .joinToString("")
+        .map { i -> kotlin.random.Random.nextInt(0, charPool.size) }
+        .map(charPool::get)
+        .joinToString("")
     return token
   }
 
@@ -81,7 +86,7 @@ class Utility(
 
       //language=SQL
       val statement = conn.prepareCall(
-        """
+          """
         select email 
         from emails_sent 
         where email = ? 
@@ -101,7 +106,7 @@ class Utility(
 
       //language=SQL
       val statement2 = conn.prepareCall(
-        """
+          """
         select email from emails_blocked where email = ?;
       """.trimIndent()
       )

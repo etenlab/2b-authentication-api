@@ -11,7 +11,9 @@ class DataSourceConfiguration {
   @Bean("writerDataSource")
   @ConfigurationProperties("spring.writer-datasource")
   fun writerDataSource(): DataSource {
-    return DataSourceBuilder.create().build()
+    return DataSourceBuilder
+        .create()
+        .build()
   }
 }
 
@@ -20,6 +22,8 @@ class ReaderDataSourceConfiguration {
   @Bean("readerDataSource")
   @ConfigurationProperties("spring.reader-datasource")
   fun readerDataSource(): DataSource {
-    return DataSourceBuilder.create().build()
+    return DataSourceBuilder
+        .create()
+        .build()
   }
 }

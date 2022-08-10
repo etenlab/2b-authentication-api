@@ -15,16 +15,17 @@ import org.springframework.kafka.core.ProducerFactory
 
 @Configuration("KafkaTopicConfig")
 class KafkaTopicConfig(
-  @Autowired
-  val app_config: AppConfig,
+    @Autowired
+    val app_config: AppConfig,
 
-  @Autowired
-  kafkaTemplate: KafkaTemplate<String, String>,
+    @Autowired
+    kafkaTemplate: KafkaTemplate<String, String>,
 
-  ) {
+    ) {
 
   init {
-    kafkaTemplate.send(KafkaTopics.InstanceInfo.name, "server started with ip: ${app_config.ip}")
+    kafkaTemplate.send(KafkaTopics.InstanceInfo.name,
+                       "server started with ip: ${app_config.ip}")
   }
 
   @Bean
@@ -48,10 +49,10 @@ class KafkaTopicConfig(
 
 @Configuration
 class KafkaProducerConfig(
-  @Autowired
-  val app_config: AppConfig,
+    @Autowired
+    val app_config: AppConfig,
 
-  ) {
+    ) {
 
   @Bean
   fun producerFactory(): ProducerFactory<String, String> {

@@ -13,5 +13,5 @@ import org.springframework.scheduling.annotation.EnableScheduling
 class AuthenticationApplication
 
 fun main(args: Array<String>) {
-	runApplication<AuthenticationApplication>(*args)
+  runApplication<AuthenticationApplication>(*args)
 }

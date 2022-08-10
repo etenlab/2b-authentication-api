@@ -22,29 +22,24 @@ import org.springframework.security.crypto.argon2.Argon2PasswordEncoder
 import org.springframework.web.bind.annotation.*
 import javax.sql.DataSource
 
-
 @RestController
 @DependsOn("DatabaseSync")
 class Register(
+    @Autowired
+    val app_config: AppConfig,
 
-  @Autowired
-  val app_config: AppConfig,
+    @Autowired
+    @Qualifier("readerDataSource")
+    val writer_ds: DataSource,
 
-  @Autowired
-  @Qualifier("readerDataSource")
-  val writer_ds: DataSource,
+    @Autowired
+    @Qualifier("readerDataSource")
+    val reader_ds: DataSource,
 
-  @Autowired
-  @Qualifier("readerDataSource")
-  val reader_ds: DataSource,
+    @Autowired val util: Utility,
 
-  @Autowired
-  val util: Utility,
-
-  @Autowired
-  val kafka: KafkaService,
-
-  ) {
+    @Autowired val kafka: KafkaService,
+) {
   val writer_jdbc = NamedParameterJdbcTemplate(writer_ds)
   val reader_jdbc = NamedParameterJdbcTemplate(reader_ds)
   val mapper = Json { ignoreUnknownKeys = true; encodeDefaults = true }
@@ -93,26 +88,21 @@ class Register(
 
         // todo: write to db
 
-
         try {
 
         } catch (e: IllegalArgumentException) {
-          kafka.send(
-            KafkaTopics.Error,
-            e.localizedMessage + '\n' + e.stackTrace.map { it.toString() }.reduce { acc, s -> acc + '\n' + s })
+          kafka.send(KafkaTopics.Error, e.localizedMessage + '\n' + e.stackTrace
+              .map { it.toString() }
+              .reduce { acc, s -> acc + '\n' + s })
           errorType = ErrorType.UnknownError
         }
 
       }
 
-
     } catch (e: Exception) {
-      kafka.send(KafkaTopics.Error,
-        e.localizedMessage
-            + '\n'
-            + e.stackTrace.map { it.toString() }
-          .reduce { acc, s -> acc + '\n' + s }
-      )
+      kafka.send(KafkaTopics.Error, e.localizedMessage + '\n' + e.stackTrace
+          .map { it.toString() }
+          .reduce { acc, s -> acc + '\n' + s })
     }
 
     return mapper.encodeToString(ErrorResponse(ErrorType.UnknownError))

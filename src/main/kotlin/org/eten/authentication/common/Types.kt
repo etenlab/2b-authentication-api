@@ -2,10 +2,9 @@ package org.eten.authentication.common
 
 import kotlinx.serialization.Serializable
 
-
 @Serializable
 data class ErrorResponse(
-  val error: ErrorType,
+    val error: ErrorType,
 )
 
 @Serializable
