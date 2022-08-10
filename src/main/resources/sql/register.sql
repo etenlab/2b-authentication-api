@@ -1,20 +1,51 @@
-CREATE OR REPLACE PROCEDURE authentication_register(
-    IN p_email VARCHAR(255),
-    IN p_password VARCHAR(50),
-    in p_session_id varchar(64),
-    in p_email_token varchar(64),
-    in p_reject_token varchar(64),
-    INOUT error_type VARCHAR(32),
-    inout p_avatar varchar(32),
-    inout p_avatar_id bigint,
-    in p_discussion_election bigint
+create or replace procedure authentication_register(
+  in p_email varchar(255),
+  in p_avatar varchar(64),
+  in p_password varchar(50),
+  in p_token text,
+  inout p_user_id bigint,
+  inout p_error_type varchar(32)
 )
-LANGUAGE PLPGSQL
-AS $$
-DECLARE
-    t_email VARCHAR(255);
-    t_token varchar(512);
-BEGIN
+language plpgsql
+as $$
+declare
+  v_email varchar(255);
+  v_avatar varchar(64);
+  v_token varchar(512);
+begin
+  select avatar
+  from avatars
+  into v_avatar
+  where avatar = p_avatar;
+
+  if found then
+      p_error_type := 'AvatarUnavailable';
+      return;
+  end if;
+
+  select user_id
+  from users
+  into p_user_id
+  where email = p_email;
+
+  if found then
+    p_error_type := 'EmailUnavailable';
+    return;
+  end if;
+
+  insert into users(email, password)
+  values (p_email, p_password)
+  returning user_id
+  into p_user_id;
+
+  insert into tokens(user_id, token)
+  values (p_user_id, p_token);
+
+  insert into avatars(user_id, avatar)
+  values (p_user_id, p_avatar);
+
+  p_error_type := 'NoError';
+
 --    SELECT email
 --    FROM users
 --    INTO t_email
@@ -64,4 +95,4 @@ BEGIN
 --        error_type := 'DuplicateEmail';
 --    end if;
 
-END; $$;
+end; $$;

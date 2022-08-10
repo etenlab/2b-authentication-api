@@ -9,7 +9,6 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.eten.authentication.AppConfig
-import org.eten.authentication.common.ErrorResponse
 import org.eten.authentication.common.ErrorType
 import org.eten.authentication.common.Utility
 import org.eten.authentication.core.KafkaService
@@ -17,6 +16,7 @@ import org.eten.authentication.core.KafkaTopics
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.context.annotation.DependsOn
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder
 import org.springframework.web.bind.annotation.*
@@ -50,45 +50,87 @@ class Register(
 
   @PostMapping("/api/authentication/register")
   @ResponseBody
-  fun register(@RequestBody request_string: String): String {
+  fun register(@RequestBody request: UserRegisterRequest): UserRegisterResponse {
     try {
-      val request_parsed = mapper.decodeFromString<UserRegisterRequest>(request_string)
 
-      if (request_parsed.email.length > 255) {
-        return mapper.encodeToString(ErrorResponse(ErrorType.EmailTooLong))
+      if (request.email.length > 255) {
+        return UserRegisterResponse(ErrorType.EmailTooLong)
       }
 
-      if (request_parsed.email.length <= 4) {
-        return mapper.encodeToString(ErrorResponse(ErrorType.EmailTooShort))
+      if (request.email.length <= 4) {
+        return UserRegisterResponse(ErrorType.EmailTooShort)
       }
 
-      if (!util.isEmailValid(request_parsed.email)) {
-        return mapper.encodeToString(ErrorResponse(ErrorType.EmailInvalid))
+      if (!util.isEmailValid(request.email)) {
+        return UserRegisterResponse(ErrorType.EmailInvalid)
       }
 
-      if (request_parsed.password.length < 8) {
-        return mapper.encodeToString(ErrorResponse(ErrorType.PasswordTooShort))
+      if (request.avatar.isEmpty()) {
+        return UserRegisterResponse(ErrorType.AvatarTooShort)
       }
 
-      if (request_parsed.password.length > 32) {
-        return mapper.encodeToString(ErrorResponse(ErrorType.PasswordTooLong))
+      if (request.avatar.length > 64) {
+        return UserRegisterResponse(ErrorType.AvatarTooLong)
       }
 
-      var errorType = util.isEmailSendable(request_parsed.email)
+      if (request.password.length < 8) {
+        return UserRegisterResponse(ErrorType.PasswordTooShort)
+      }
+
+      if (request.password.length > 32) {
+        return UserRegisterResponse(ErrorType.PasswordTooLong)
+      }
+
+      var errorType = util.isEmailSendable(request.email)
 
       if (errorType == ErrorType.NoError) {
+        val user_token = util.create_jwt()
         val deny_token = util.random_string(64)
         val confirm_token = util.random_string(64)
 
-        val pash = encoder.encode(request_parsed.password)
+        val pash = encoder.encode(request.password)
 
         var errorType = ErrorType.UnknownError
         var avatar: String? = null
         var avatar_id: Long? = null
 
-        // todo: write to db
-
         try {
+
+          //language=SQL
+          val result = writer_jdbc.queryForRowSet("""
+          call authentication_register(:email, :avatar, :password, :token, 0, '');
+        """.trimIndent(), MapSqlParameterSource()
+              .addValue("email", request.email)
+              .addValue("avatar", request.avatar)
+              .addValue("password", pash)
+              .addValue("token", user_token)
+          )
+
+          if (result.next()) {
+            var error: String? = result.getString("p_error_type")
+            if (result.wasNull()) error = null
+
+            if (error == null) {
+              return UserRegisterResponse(ErrorType.UnknownError)
+            }
+
+            val error_type = ErrorType.valueOf(error)
+            if (error_type != ErrorType.NoError) {
+              return UserRegisterResponse(error_type)
+            }
+
+            var user_id: Long? = result.getLong("p_user_id")
+            if (result.wasNull()) user_id = null
+            if (user_id == null) {
+              return UserRegisterResponse(ErrorType.UnknownError)
+            }
+
+            return UserRegisterResponse(
+                error = ErrorType.NoError,
+                user_id = user_id,
+                token = user_token,
+            )
+          }
 
         } catch (e: IllegalArgumentException) {
           kafka.send(KafkaTopics.Error, e.localizedMessage + '\n' + e.stackTrace
@@ -105,7 +147,7 @@ class Register(
           .reduce { acc, s -> acc + '\n' + s })
     }
 
-    return mapper.encodeToString(ErrorResponse(ErrorType.UnknownError))
+    return UserRegisterResponse(ErrorType.UnknownError)
   }
 
 //  fun sendRegistrationEmail(email: String, emailToken: String, rejectToken: String) {

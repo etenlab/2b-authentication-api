@@ -9,11 +9,15 @@ data class ErrorResponse(
 
 @Serializable
 enum class ErrorType {
+  AvatarUnavailable,
+  AvatarTooShort,
+  AvatarTooLong,
   EmailNotFound,
   EmailTooLong,
   EmailTooShort,
   EmailInvalid,
   EmailIsBlocked,
+  EmailUnavailable,
   NoError,
   PasswordTooLong,
   PasswordTooShort,
