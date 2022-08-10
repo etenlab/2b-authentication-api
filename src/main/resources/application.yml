@@ -1,0 +1,46 @@
+awsAccessKeyId: ${AWS_ACCESS_KEY_ID}
+awsSecretAccessKey: ${AWS_SECRET_ACCESS_KEY}
+env: local
+s3_url_prefix: ${S3_URL_PREFIX}
+
+email:
+  server: http://localhost:3333
+
+server:
+  port: 8080
+  hostname: ${HOSTNAME}
+  jwtSecret: ${JWT_SECRET}
+
+spring:
+
+  writer-datasource:
+    jdbcUrl: jdbc:postgresql://${DB_DOMAIN}:5432/${DB_DATABASE}
+    driverClassName: org.postgresql.Driver
+    username: postgres
+    password: ${DB_PASSWORD}
+    ssl: false
+
+  reader-datasource:
+    jdbcUrl: jdbc:postgresql://${DB_DOMAIN}:5432/${DB_DATABASE}
+    driverClassName: org.postgresql.Driver
+    username: postgres
+    password: ${DB_PASSWORD}
+    ssl: false
+
+  hikari:
+    connection-timeout: 20000 #maximum number of milliseconds that a client will wait for a connection
+    minimum-idle: 5 #minimum number of idle connections maintained by HikariCP in a connection pool
+    maximum-pool-size: 5 #maximum pool size
+    idle-timeout: 10000 #maximum idle time for connection
+    max-lifetime: 1000 # maximum lifetime in milliseconds of a connection in the pool after it is closed.
+    auto-commit: true #default auto-commit behavior.
+
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP}
+    consumer:
+      group-id: "myGroup"
+
+  task:
+    scheduling:
+      pool:
+        size: 5
