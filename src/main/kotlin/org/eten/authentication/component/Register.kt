@@ -5,8 +5,6 @@ package org.eten.authentication.component
 //import com.amazonaws.regions.Regions
 //import com.amazonaws.services.simpleemail.AmazonSimpleEmailServiceClientBuilder
 //import com.amazonaws.services.simpleemail.model.*
-import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.eten.authentication.AppConfig
 import org.eten.authentication.common.ErrorType
@@ -50,36 +48,15 @@ class Register(
 
   @PostMapping("/api/authentication/register")
   @ResponseBody
-  fun register(@RequestBody request: UserRegisterRequest): UserRegisterResponse {
+  fun register(@RequestBody request: RegisterRequest): RegisterResponse {
     try {
-
-      if (request.email.length > 255) {
-        return UserRegisterResponse(ErrorType.EmailTooLong)
-      }
-
-      if (request.email.length <= 4) {
-        return UserRegisterResponse(ErrorType.EmailTooShort)
-      }
-
-      if (!util.isEmailValid(request.email)) {
-        return UserRegisterResponse(ErrorType.EmailInvalid)
-      }
-
-      if (request.avatar.isEmpty()) {
-        return UserRegisterResponse(ErrorType.AvatarTooShort)
-      }
-
-      if (request.avatar.length > 64) {
-        return UserRegisterResponse(ErrorType.AvatarTooLong)
-      }
-
-      if (request.password.length < 8) {
-        return UserRegisterResponse(ErrorType.PasswordTooShort)
-      }
-
-      if (request.password.length > 32) {
-        return UserRegisterResponse(ErrorType.PasswordTooLong)
-      }
+      if (request.email.length > 255) return RegisterResponse(ErrorType.EmailTooLong)
+      if (request.email.length <= 4) return RegisterResponse(ErrorType.EmailTooShort)
+      if (!util.isEmailValid(request.email)) return RegisterResponse(ErrorType.EmailInvalid)
+      if (request.avatar.isEmpty()) return RegisterResponse(ErrorType.AvatarTooShort)
+      if (request.avatar.length > 64) return RegisterResponse(ErrorType.AvatarTooLong)
+      if (request.password.length < 8) return RegisterResponse(ErrorType.PasswordTooShort)
+      if (request.password.length > 32) return RegisterResponse(ErrorType.PasswordTooLong)
 
       var errorType = util.isEmailSendable(request.email)
 
@@ -111,21 +88,21 @@ class Register(
             if (result.wasNull()) error = null
 
             if (error == null) {
-              return UserRegisterResponse(ErrorType.UnknownError)
+              return RegisterResponse(ErrorType.UnknownError)
             }
 
             val error_type = ErrorType.valueOf(error)
             if (error_type != ErrorType.NoError) {
-              return UserRegisterResponse(error_type)
+              return RegisterResponse(error_type)
             }
 
             var user_id: Long? = result.getLong("p_user_id")
             if (result.wasNull()) user_id = null
             if (user_id == null) {
-              return UserRegisterResponse(ErrorType.UnknownError)
+              return RegisterResponse(ErrorType.UnknownError)
             }
 
-            return UserRegisterResponse(
+            return RegisterResponse(
                 error = ErrorType.NoError,
                 user_id = user_id,
                 token = user_token,
@@ -147,7 +124,7 @@ class Register(
           .reduce { acc, s -> acc + '\n' + s })
     }
 
-    return UserRegisterResponse(ErrorType.UnknownError)
+    return RegisterResponse(ErrorType.UnknownError)
   }
 
 //  fun sendRegistrationEmail(email: String, emailToken: String, rejectToken: String) {

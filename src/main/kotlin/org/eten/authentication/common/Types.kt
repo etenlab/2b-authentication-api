@@ -10,6 +10,7 @@ data class ErrorResponse(
 @Serializable
 enum class ErrorType {
   AvatarUnavailable,
+  AvatarNotFound,
   AvatarTooShort,
   AvatarTooLong,
   EmailNotFound,
@@ -18,6 +19,7 @@ enum class ErrorType {
   EmailInvalid,
   EmailIsBlocked,
   EmailUnavailable,
+  InvalidEmailOrPassword,
   NoError,
   PasswordTooLong,
   PasswordTooShort,
