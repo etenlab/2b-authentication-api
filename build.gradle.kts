@@ -29,6 +29,9 @@ dependencies {
 	implementation("org.springframework.security:spring-security-crypto:5.5.2")
 	implementation("com.amazonaws:aws-java-sdk-ses:1.12.62")
 	implementation("com.auth0:java-jwt:4.0.0")
+	implementation("org.springdoc:springdoc-openapi-ui:1.5.12")
+	implementation("org.springdoc:springdoc-openapi-kotlin:1.5.12")
+	implementation("org.springdoc:springdoc-openapi-javadoc:1.5.12")
 //	implementation("org.postgresql:postgresql:42.3.5")
 
 	developmentOnly("org.springframework.boot:spring-boot-devtools")

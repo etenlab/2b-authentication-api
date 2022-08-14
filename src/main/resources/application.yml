@@ -44,3 +44,11 @@ spring:
     scheduling:
       pool:
         size: 5
+
+  springdoc:
+    swagger-ui:
+      servers:
+        - url: ${SWAGGER_URL}
+      path: /swagger-ui/index.html
+      schemes: [ http ]
+      disable-swagger-default-url: true
