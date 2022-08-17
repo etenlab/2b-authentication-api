@@ -45,7 +45,7 @@ jobs:
         with:
           java-version: 1.18
       - name: Gradle Build
-        run: ./gradlew build
+        run: ./gradlew build --stacktrace --info
         env:
           HOSTNAME: localhost
           JWT_SECRET: asdfasdf
