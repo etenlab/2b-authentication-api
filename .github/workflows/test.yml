@@ -30,6 +30,7 @@ jobs:
         with:
           java-version: 1.18
       - name: Gradle Build
+        env:
           HOSTNAME: localhost
           JWT_SECRET: asdfasdf
           AWS_ACCESS_KEY_ID: asdf
