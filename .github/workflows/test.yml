@@ -4,14 +4,42 @@ on: [push]
 jobs:
   test:
     name: Test Suite
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
+
+    services:
+      kafka:
+        name: Start Bitname Kafka
+        uses: bbcCorp/kafka-actions@v1
+
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_PASSWORD: asdfasdf
+          POSTGRES_DB: eil_db_1
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     steps:
-      - uses: actions/checkout@v1
-      - name: Set up JDK 18
+      uses: actions/checkout@v1
+      name: Set up JDK 18
         uses: actions/setup-java@v1
         with:
           java-version: 1.18
-      - name: Gradle Build
+        name: Gradle Build
+          HOSTNAME: localhost
+          JWT_SECRET: asdfasdf
+          AWS_ACCESS_KEY_ID: asdf
+          AWS_SECRET_ACCESS_KEY: asdf
+          DB_DOMAIN: localhost
+          DB_USERNAME: postgres
+          DB_DATABASE: eil_db_1
+          DB_PASSWORD: asdfasdf
+          S3_URL_PREFIX: asdf
+          KAFKA_BOOTSTRAP: "localhost:9092"
         run: ./gradlew build
-      - name: Gradle Package BootJar
+        name: Gradle Package BootJar
         run: ./gradle bootJar
