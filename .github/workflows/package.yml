@@ -5,19 +5,6 @@ jobs:
   package:
     runs-on: ubuntu-latest
 
-    services:
-      postgres:
-        image: postgres
-        env:
-          POSTGRES_PASSWORD: asdfasdf
-          POSTGRES_DB: eil_db_1
-        # Set health checks to wait until postgres has started
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-
     steps:
       - uses: actions/checkout@v1
       - name: Set up JDK 18
@@ -40,4 +27,4 @@ jobs:
       - name: Gradle Package BootJar
         run: ./gradlew bootJar
       - name: Dockerize
-        run: docker build -t etenlab/2b-authentication-api .
+        run: docker build -t etenlab/2b-authentication-api --platform linux/amd64 .
