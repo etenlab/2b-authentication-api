@@ -1,6 +1,5 @@
 package org.eten.authentication.core
 
-import org.eten.authentication.AppConfig
 import org.eten.authentication.common.Utility
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier

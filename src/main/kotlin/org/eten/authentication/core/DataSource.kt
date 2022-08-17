@@ -1,4 +1,4 @@
-package org.eten.authentication
+package org.eten.authentication.core
 
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.boot.jdbc.DataSourceBuilder

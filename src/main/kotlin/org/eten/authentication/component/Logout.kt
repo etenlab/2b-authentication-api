@@ -1,7 +1,7 @@
 package org.eten.authentication.component
 
 import kotlinx.serialization.json.Json
-import org.eten.authentication.AppConfig
+import org.eten.authentication.core.AppConfig
 import org.eten.authentication.common.ErrorType
 import org.eten.authentication.common.Utility
 import org.eten.authentication.core.KafkaService

@@ -1,4 +1,4 @@
-package org.eten.authentication
+package org.eten.authentication.core
 
 import org.eten.authentication.core.ConfigEnv
 import org.springframework.beans.factory.annotation.Value
