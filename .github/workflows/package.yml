@@ -27,4 +27,4 @@ jobs:
       - name: Gradle Package BootJar
         run: ./gradlew bootJar
       - name: Dockerize
-        run: docker build -t etenlab/2b-authentication-api --platform linux/amd64 .
+        run: docker build -t etenlab/2b-authentication-api .
