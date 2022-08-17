@@ -38,4 +38,6 @@ jobs:
           S3_URL_PREFIX: asdf
           KAFKA_BOOTSTRAP: "localhost:9092"
       - name: Gradle Package BootJar
-        run: ./gradle bootJar
+        run: ./gradlew bootJar
+      - name: Dockerize
+        run: docker build -t etenlab/2b-authentication-api .
