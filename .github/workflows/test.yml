@@ -30,7 +30,7 @@ jobs:
         with:
           java-version: 1.18
       - name: Gradle Build
-        run: ./gradlew build
+      - run: ./gradlew build
         env:
           HOSTNAME: localhost
           JWT_SECRET: asdfasdf
@@ -43,4 +43,4 @@ jobs:
           S3_URL_PREFIX: asdf
           KAFKA_BOOTSTRAP: "localhost:9092"
       - name: Gradle Package BootJar
-        run: ./gradle bootJar
+      - run: ./gradle bootJar
