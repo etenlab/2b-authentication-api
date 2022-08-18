@@ -50,5 +50,5 @@ jobs:
         with:
           context: .
           push: true
-          tags: etenlab/2b-authentication-api:latest
+          tags: etenlab/authentication-api:latest
           labels: ${{ steps.meta.outputs.labels }}
