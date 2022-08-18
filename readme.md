@@ -1,3 +1,3 @@
-# 2B - Authentication API
+# Authentication API
 
 REST API for user authentication.
