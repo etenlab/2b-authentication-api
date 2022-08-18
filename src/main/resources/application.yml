@@ -7,7 +7,7 @@ email:
   server: http://localhost:3333
 
 server:
-  port: 8090
+  port: 8202
   hostname: ${HOSTNAME}
   jwtSecret: ${JWT_SECRET}
 
