@@ -9,10 +9,6 @@ class KafkaService(
     @Autowired
     val kafka: KafkaTemplate<String, String>,
 ) {
-  init{
-    println("KAFKA SERVICE")
-  }
-
   fun send(
       topic: KafkaTopics,
       message: String,
