@@ -49,6 +49,6 @@ spring:
     swagger-ui:
       servers:
         - url: ${SWAGGER_URL}
-      path: /swagger-ui/index.html?configUrl=/v3/api-docs/swagger-config#/
+      path: /swagger-ui/index.html
       schemes: [ http ]
       disable-swagger-default-url: true
