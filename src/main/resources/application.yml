@@ -47,8 +47,8 @@ spring:
 
   springdoc:
     swagger-ui:
-      servers:
-        - url: ${SWAGGER_URL}
-      path: /swagger-ui/index.html
-      schemes: [ http ]
+      # servers:
+      #   - url: ${SWAGGER_URL}
+      # path: /swagger-ui/index.html
+      # schemes: [ http ]
       disable-swagger-default-url: true
