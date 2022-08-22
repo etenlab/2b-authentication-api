@@ -12,13 +12,11 @@ import org.springframework.context.annotation.DependsOn
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.ResponseBody
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import javax.sql.DataSource
 
 @RestController
+@CrossOrigin(origins = ["*"])
 @DependsOn("DatabaseSync")
 class Logout(
     @Autowired

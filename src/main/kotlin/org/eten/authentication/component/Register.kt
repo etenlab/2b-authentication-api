@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.*
 import javax.sql.DataSource
 
 @RestController
+@CrossOrigin(origins = ["*"])
 @DependsOn("DatabaseSync")
 class Register(
     @Autowired
