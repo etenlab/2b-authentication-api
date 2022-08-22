@@ -23,7 +23,7 @@ dependencies {
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 
-	implementation("org.springframework.kafka:spring-kafka:2.9.0")
+//	implementation("org.springframework.kafka:spring-kafka:2.9.0")
 	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.3")
 	implementation("org.bouncycastle:bcprov-jdk15on:1.70")
 	implementation("org.springframework.security:spring-security-crypto:5.7.2")
